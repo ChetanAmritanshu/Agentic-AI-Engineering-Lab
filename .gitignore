@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.next-pages/
+out/
+coverage/
+.env*
+!.env.example
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
