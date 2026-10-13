@@ -1,47 +1,8 @@
 "use client";
-
 import { useCallback, useEffect, useState } from "react";
-
 export const PROGRESS_KEY = "agentic-ai-lab:chapter-01";
-
-type SavedProgress = { visited: string[]; complete: boolean; updatedAt: string };
-const empty: SavedProgress = { visited: [], complete: false, updatedAt: "" };
-
-export function useChapterProgress() {
-  const [progress, setProgress] = useState<SavedProgress>(empty);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    let restored = empty;
-    try {
-      const saved = window.localStorage.getItem(PROGRESS_KEY);
-      if (saved) restored = JSON.parse(saved) as SavedProgress;
-    } catch {
-      window.localStorage.removeItem(PROGRESS_KEY);
-    }
-    const timer = window.setTimeout(() => {
-      setProgress(restored);
-      setReady(true);
-    }, 0);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  const persist = useCallback((next: SavedProgress) => {
-    setProgress(next);
-    window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(next));
-  }, []);
-
-  const visit = useCallback((id: string) => {
-    setProgress((current) => {
-      if (current.visited.includes(id)) return current;
-      const next = { ...current, visited: [...current.visited, id], updatedAt: new Date().toISOString() };
-      window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(next));
-      return next;
-    });
-  }, []);
-
-  const complete = useCallback(() => persist({ ...progress, complete: true, updatedAt: new Date().toISOString() }), [persist, progress]);
-  const reset = useCallback(() => persist(empty), [persist]);
-
-  return { progress, ready, visit, complete, reset };
-}
+export const progressKey = (chapterId: string) => `agentic-ai-lab:${chapterId}`;
+export type SavedProgress = { visited: string[]; complete: boolean; updatedAt: string };
+export const emptyProgress = (): SavedProgress => ({ visited: [], complete: false, updatedAt: "" });
+export function parseSavedProgress(raw: string | null): SavedProgress { if (!raw) return emptyProgress(); try { const value = JSON.parse(raw) as Partial<SavedProgress>; return { visited: Array.isArray(value.visited) ? value.visited.filter((item): item is string => typeof item === "string") : [], complete: value.complete === true, updatedAt: typeof value.updatedAt === "string" ? value.updatedAt : "" }; } catch { return emptyProgress(); } }
+export function useChapterProgress(chapterId = "chapter-01") { const storageKey = progressKey(chapterId); const [progress, setProgress] = useState<SavedProgress>(emptyProgress); const [ready, setReady] = useState(false); useEffect(() => { const restored = parseSavedProgress(window.localStorage.getItem(storageKey)); const timer = window.setTimeout(() => { setProgress(restored); setReady(true); }, 0); return () => window.clearTimeout(timer); }, [storageKey]); const persist = useCallback((next: SavedProgress) => { setProgress(next); window.localStorage.setItem(storageKey, JSON.stringify(next)); }, [storageKey]); const visit = useCallback((id: string) => { setProgress((current) => { if (current.visited.includes(id)) return current; const next = { ...current, visited: [...current.visited, id], updatedAt: new Date().toISOString() }; window.localStorage.setItem(storageKey, JSON.stringify(next)); return next; }); }, [storageKey]); const complete = useCallback(() => persist({ ...progress, complete: true, updatedAt: new Date().toISOString() }), [persist, progress]); const reset = useCallback(() => persist(emptyProgress()), [persist]); return { progress, ready, visit, complete, reset }; }

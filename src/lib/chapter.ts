@@ -1,21 +1,23 @@
-export type ChapterSection = {
-  id: string;
-  eyebrow: string;
-  title: string;
-  shortTitle: string;
-  time: number;
-};
+export type ChapterSection = { id: string; eyebrow: string; title: string; shortTitle: string; time: number };
+export type ChapterMeta = { id: string; number: string; title: string; shortTitle: string; path: string; description: string; sections: ChapterSection[] };
+const section = (id: string, eyebrow: string, title: string, shortTitle: string, time: number): ChapterSection => ({ id, eyebrow, title, shortTitle, time });
 
-export const chapterOneSections: ChapterSection[] = [
-  { id: "meet-bob", eyebrow: "The story", title: "Meet Bob", shortTitle: "Meet Bob", time: 4 },
-  { id: "chatbot-vs-agent", eyebrow: "The problem", title: "A chatbot versus an agent", shortTitle: "Chatbot vs agent", time: 5 },
-  { id: "agent-loop", eyebrow: "Visual explanation", title: "The Agent Loop", shortTitle: "Agent Loop", time: 7 },
-  { id: "toolbox", eyebrow: "Playground", title: "Bob's Toolbox", shortTitle: "Toolbox", time: 5 },
-  { id: "inside-agent", eyebrow: "Real engineering", title: "Inside an Agent", shortTitle: "Architecture", time: 7 },
-  { id: "first-agent", eyebrow: "Code", title: "Your First Agent in Python", shortTitle: "Python agent", time: 9 },
-  { id: "break-bob", eyebrow: "Break it", title: "Break Bob", shortTitle: "Failure lab", time: 7 },
-  { id: "challenge", eyebrow: "The challenge", title: "The Agent Challenge", shortTitle: "Challenge", time: 9 },
-  { id: "recap", eyebrow: "The takeaway", title: "What You Learned", shortTitle: "Recap", time: 4 },
+export const chapters: ChapterMeta[] = [
+  { id: "chapter-01", number: "01", title: "Meet Your First AI Agent", shortTitle: "What Is an AI Agent?", path: "/learn/01-what-is-an-ai-agent/", description: "Meet Bob and learn how goals, tools, state, and safe stopping create an agent.", sections: [
+    section("meet-bob", "The story", "Meet Bob", "Meet Bob", 4), section("chatbot-vs-agent", "The problem", "A chatbot versus an agent", "Chatbot vs agent", 5), section("agent-loop", "Visual explanation", "The Agent Loop", "Agent Loop", 7), section("toolbox", "Playground", "Bob's Toolbox", "Toolbox", 5), section("inside-agent", "Real engineering", "Inside an Agent", "Architecture", 7), section("first-agent", "Code", "Your First Agent in Python", "Python agent", 9), section("break-bob", "Break it", "Break Bob", "Failure lab", 7), section("challenge", "The challenge", "The Agent Challenge", "Challenge", 9), section("recap", "The takeaway", "What You Learned", "Recap", 4),
+  ]},
+  { id: "chapter-02", number: "02", title: "How Does Bob's Brain Work?", shortTitle: "How LLMs Work", path: "/learn/02-how-llms-work/", description: "See tokens, prediction, temperature, context, and hallucinations from the inside.", sections: [
+    section("word-machine", "The story", "Bob's Magical Word Machine", "Word machine", 5), section("tokens", "The problem", "What Are Tokens?", "Tokens", 6), section("prediction", "Visual explanation", "Predict the Next Piece", "Prediction", 8), section("temperature", "Playground", "Temperature Playground", "Temperature", 7), section("context-window", "Playground", "Bob's Tiny Desk", "Context window", 8), section("hallucinations", "Break it", "Why Bob Makes Things Up", "Hallucinations", 7), section("llm-engineering", "Real engineering", "Engineering Deep Dive", "Deep dive", 10), section("break-brain", "Debug it", "Break Bob's Brain", "Debug lab", 8), section("brain-challenge", "Challenge & recap", "Brain Challenge", "Challenge", 10),
+  ]},
+  { id: "chapter-03", number: "03", title: "How Do We Give Bob Better Instructions?", shortTitle: "Prompt Engineering", path: "/learn/03-prompt-engineering/", description: "Build clear prompts, message roles, contracts, examples, and injection defenses.", sections: [
+    section("misunderstands", "The story", "Bob Misunderstands Us", "Ambiguity", 5), section("prompt-anatomy", "The problem", "The Anatomy of a Good Prompt", "Prompt anatomy", 7), section("message-roles", "Visual explanation", "Who Gives Bob Instructions?", "Message roles", 7), section("examples", "Playground", "Show Bob an Example", "Few-shot", 7), section("prompt-doctor", "Flagship lab", "Prompt Doctor", "Prompt Doctor", 10), section("prompt-contracts", "Real engineering", "Prompt Contracts", "Contracts", 8), section("instruction-conflict", "Security", "When Instructions Conflict", "Injection", 9), section("prompt-deep-dive", "Code & break it", "Engineering Deep Dive", "Deep dive", 10), section("prompt-challenge", "Challenge & recap", "Prompt Challenge", "Challenge", 10),
+  ]},
+  { id: "chapter-04", number: "04", title: "Teaching Bob to Answer in a Perfect Format", shortTitle: "Structured Outputs", path: "/learn/04-structured-outputs/", description: "Turn flexible language into validated JSON that software can safely consume.", sections: [
+    section("messy-answers", "The story", "Bob's Messy Answers", "Messy answers", 5), section("meet-json", "The problem", "Meet JSON", "JSON", 7), section("answer-template", "Visual explanation", "Bob's Answer Template", "Schemas", 8), section("json-repair", "Flagship lab", "JSON Repair Workshop", "Repair JSON", 11), section("validation-pipeline", "Playground", "What Happens When Bob Gets It Wrong?", "Validation", 8), section("pydantic", "Real engineering", "Meet Pydantic", "Pydantic", 10), section("reliable-outputs", "Production depth", "Reliable Structured Outputs", "Reliability", 8), section("break-pipeline", "Break it", "Break Bob's Data Pipeline", "Failure lab", 8), section("data-challenge", "Challenge & recap", "Structured Output Challenge", "Challenge", 10),
+  ]},
 ];
 
+export const chapterOneSections = chapters[0].sections;
 export const totalChapterMinutes = chapterOneSections.reduce((sum, item) => sum + item.time, 0);
+export const chapterMinutes = (chapter: ChapterMeta) => chapter.sections.reduce((sum, item) => sum + item.time, 0);
+export const chapterById = (id: string) => chapters.find((chapter) => chapter.id === id);
