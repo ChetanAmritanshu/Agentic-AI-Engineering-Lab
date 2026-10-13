@@ -1,0 +1,3 @@
+import { describe, expect, it } from "vitest";
+import { parseSavedProgress, progressKey, PROGRESS_KEY } from "./progress";
+describe("chapter progress compatibility", () => { it("preserves the Chapter 01 key", () => { expect(progressKey("chapter-01")).toBe(PROGRESS_KEY); }); it("restores old records", () => { expect(parseSavedProgress('{"visited":["meet-bob"],"complete":true,"updatedAt":"2026-01-01"}')).toEqual({ visited: ["meet-bob"], complete: true, updatedAt: "2026-01-01" }); }); it("recovers from malformed storage", () => { expect(parseSavedProgress("bad")).toEqual({ visited: [], complete: false, updatedAt: "" }); }); });
